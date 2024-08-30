@@ -9,24 +9,24 @@ int main(){
     int i=0;
     for (int i = 0; i < 6; i++)
     {
-        procesos[i]=fork();
+        procesos[i]=fork(); // Crear los 6 hijos y guardar sus PIDS
         if(procesos[i]==0){
-            execlp("xterm", "xterm", "-e", "./getty", NULL);
-            //dado caso que no se ejecute para que no continue
-            exit(0);
+            execlp("xterm", "xterm", "-e", "./getty", NULL); // Reemplazarlos por getty mediante una ventana de xterm (xterm -e ./getty)
+            exit(0); //dado caso que no se ejecute para que no continue
         }
     }
-    //codigo para revisar que siempre hayga 6 getty
-    while(1){
+    //codigo para revisar que siempre haya 6 getty
+    while(1){ 
         ended = wait(NULL);
-        for (int i = 0; i < 6; i++)
+        for (int i = 0; i < 6; i++) // Constantemente, revisar todos los hijos
         {
-            if(ended == procesos[i]){
-                procesos[i]=fork();
+            if(ended == procesos[i]){ // Si un hijo finalizo... (se cerro la ventana)
+                                      // Verificar si se cerro por un shutdown, en caso de que si, cerrar todos los procesos
+                procesos[i]=fork(); // Crear uno nuevo y guardar su pid
                 if(procesos[i]==0){
                     //execlp("sh","sh","xterm -e ./getty",NULL);
-                    execlp("xterm", "xterm", "-e", "./getty", NULL);
-                    exit(0);
+                    execlp("xterm", "xterm", "-e", "./getty", NULL); // Reemplazarlo por la ventana de xterm (xterm -e ./getty)
+                    exit(0); //dado caso que no se ejecute para que no continue
                 }
             }
         }

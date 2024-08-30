@@ -12,18 +12,19 @@ int main(){
     while(1){
         printf("sh> ");
         scanf("%s",str);
-        if(strcmp(str,exitcmp)==0){
+        if(strcmp(str,exitcmp)==0){ // Si el usuario quiere salir, cerrar el proceso sh
             //regresar
-        }else if(strcmp(str,shudown)==0){
+            exit(0);
+        }else if(strcmp(str,shudown)==0){ // todo: Si el usuario quiere salir, cerrar todos los procesos 
             //parar todo
             exit(0);
         }else{
             pid_t eje;
-            eje=fork();
+            eje=fork();  // Crear un hijo
             if(eje==0){
-                execlp(str,str,NULL);
+                execlp(str,str,NULL); // El hijo ejecutara el comando
             }else{
-                wait(NULL);
+                wait(NULL);     // Esperar a que acabe el hijo
             }
         }
     }
