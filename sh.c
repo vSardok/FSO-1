@@ -33,6 +33,7 @@ int main(){
                 }
                 //for (int j=0; j<=i; j++) printf("%s ",cmdargs[j]); // Debbug de los argumentos
                 execvp(cmdargs[0],cmdargs); // El hijo ejecutara el comando
+                exit(0); // Si el comando es incorrecto, el hijo debe acabar para no duplicar los procesos
             }else{
                 wait(NULL);     // Esperar a que acabe el hijo
             }
