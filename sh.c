@@ -17,7 +17,7 @@ int main(){
             exit(0);
         }else if(strcmp(str,shudown)==0){ // todo: Si el usuario quiere salir, cerrar todos los procesos 
             //parar todo
-            exit(0);
+            exit(4);
         }else{
             pid_t eje;
             eje=fork();  // Crear un hijo

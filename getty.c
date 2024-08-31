@@ -6,6 +6,8 @@
 #include <sys/wait.h>
 #define true 1
 #define false 0
+pid_t forking;
+void sigquit();
 
 int prompt_login() {
     FILE *file;
@@ -19,10 +21,10 @@ int prompt_login() {
     strcpy(con,login);
     strcat(con,dots);
     strcat(con,password); // Construir el login
-    printf("%s\n",con);
+    //printf("%s\n",con);
     while (fgets(lines,sizeof(lines),file)!=NULL) // Mientras aun haya lineas en el archivo
     {
-        printf("%s\n",lines);
+        //printf("%s\n",lines);
         if(strcmp(lines,con)==0){ // Si un login coincide con el archivo, devuelve true
             printf("Success\n");
             sleep(1);
@@ -36,21 +38,35 @@ int prompt_login() {
 
 
 
-void main(){
+int main(){
+    signal(SIGQUIT, sigquit);
+    pid_t hijo;
+    int status;
     while(1){  // Continuamente
         int promp=false;   // Al inicio de cada ciclo, se vuelve a solicitar el login
         while (promp == false)   
         {
             promp = prompt_login();
-        }
-        pid_t sh;              // Tras login exitoso
-        sh=fork();             // Crear un hijo
-        if(sh==0){
+        }        
+        forking=fork();             // Crear un hijo
+        if(forking==0){
             execlp("./sh","sh",NULL);   // El hijo ejecuta sh (./sh)
         }else{
-            wait(NULL);                 // El padre espera a que acabe el hijo para reiniciar el ciclo
+            hijo = waitpid(-1, &status, 0);               // El padre espera a que acabe el hijo para reiniciar el ciclo
+            printf("Status %d\n",WEXITSTATUS(status));
+            if(WEXITSTATUS(status)==4){
+                sleep(1);
+                return(4);
+            }
                                         // Si el hijo acabo con un "shutdown", enviar la señal de salida al padre (init)
         }                             
     }
-    exit(0);
+}
+
+void sigquit() {
+    if(forking!=0){
+        kill(forking, SIGKILL);
+    }
+    wait(NULL);
+    exit(4);
 }
