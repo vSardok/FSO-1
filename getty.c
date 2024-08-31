@@ -59,11 +59,14 @@ int main(){
             if(statusint==4){
                 //xterm send alwais 0 unless error so im sending a signal to parent
                 // sleep(2);
-                // kill(parent,SIGQUIT);
+                kill(getppid(),SIGQUIT);
+                exit(4);
                 // return(0); DIDNT WORK FUCKKKKKK
-                return(-1);
-            }
-                                        // Si el hijo acabo con un "shutdown", enviar la señal de salida al padre (init)
+                // fprintf(stderr, "SHUTDOWN\n");
+                // exit(1); didnt work 
+
+                }
+                // Si el hijo acabo con un "shutdown", enviar la señal de salida al padre (init)
         }                             
     }
 }
