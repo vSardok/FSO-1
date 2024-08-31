@@ -40,6 +40,7 @@ int prompt_login() {
 
 int main(){
     signal(SIGQUIT, sigquit);
+    pid_t parent = getpid();
     pid_t hijo;
     int status;
     while(1){  // Continuamente
@@ -51,12 +52,16 @@ int main(){
         forking=fork();             // Crear un hijo
         if(forking==0){
             execlp("./sh","sh",NULL);   // El hijo ejecuta sh (./sh)
-        }else{
+        }else{  
             hijo = waitpid(-1, &status, 0);               // El padre espera a que acabe el hijo para reiniciar el ciclo
-            printf("Status %d\n",WEXITSTATUS(status));
-            if(WEXITSTATUS(status)==4){
-                sleep(1);
-                return(4);
+            int statusint=WEXITSTATUS(status);
+            printf("Status %d\n",statusint);
+            if(statusint==4){
+                //xterm send alwais 0 unless error so im sending a signal to parent
+                // sleep(2);
+                // kill(parent,SIGQUIT);
+                // return(0); DIDNT WORK FUCKKKKKK
+                return(-1);
             }
                                         // Si el hijo acabo con un "shutdown", enviar la señal de salida al padre (init)
         }                             

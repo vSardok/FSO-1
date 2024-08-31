@@ -3,9 +3,13 @@
 #include <unistd.h>
 #include <signal.h>
 #include <sys/wait.h>
+pid_t procesos[6];
+int finish=0;
+void sigquit();
 
 int main(){
-    pid_t procesos[6],ended;
+    signal(SIGQUIT, sigquit);
+    pid_t ended;
     int i=0;
     for (int i = 0; i < 6; i++)
     {
@@ -17,34 +21,37 @@ int main(){
     }
     //codigo para revisar que siempre haya 6 getty
     int status;
-    while(1){ 
+    while(!finish){ 
         ended = waitpid(-1, &status, 0);
         printf("Ended: %d, Status: %d\n",ended,WEXITSTATUS(status));
         for (int i = 0; i < 6; i++) // Constantemente, revisar todos los hijos
         {
             
             if(ended == procesos[i]){ // Si un hijo finalizo... (se cerro la ventana)
-                                      // Verificar si se cerro por un shutdown, en caso de que si, cerrar todos los procesos
-                
-                if(WEXITSTATUS(status)==4){
-                    for (int i = 0; i < 6; i++)
-                    {
-                        kill(procesos[i], SIGQUIT);
-                    }
-                    while(wait(NULL)>0);
-                    return(0);
-                }else{
-                    procesos[i]=fork(); // Crear uno nuevo y guardar su pid
+            if (!finish)
+            {
+                procesos[i]=fork(); // Crear uno nuevo y guardar su pid
                 if(procesos[i]==0){
                     //execlp("sh","sh","xterm -e ./getty",NULL);
                     execlp("xterm", "xterm", "-e", "./getty", NULL); // Reemplazarlo por la ventana de xterm (xterm -e ./getty)
                     exit(0); //dado caso que no se ejecute para que no continue
                 }
-                }
-                
+            }
+                                      // Verificar si se cerro por un shutdown, en caso de que si, cerrar todos los proceso
+
             }
         }
         
     }
     
+}
+
+
+void sigquit() {
+    for (int i = 0; i < 6; i++) {
+        printf("SIGNAL RESIVED");
+        sleep(5);
+        kill(procesos[i], SIGQUIT);
+    }
+    exit(0);
 }
