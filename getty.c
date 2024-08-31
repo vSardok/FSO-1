@@ -27,7 +27,7 @@ int prompt_login() {
         //printf("%s\n",lines);
         if(strcmp(lines,con)==0){ // Si un login coincide con el archivo, devuelve true
             printf("Success\n");
-            sleep(1);
+            //sleep(1);
             return(true);
         }
     }
@@ -55,8 +55,8 @@ int main(){
         }else{  
             hijo = waitpid(-1, &status, 0);               // El padre espera a que acabe el hijo para reiniciar el ciclo
             int statusint=WEXITSTATUS(status);
-            printf("Status %d\n",statusint);
-            if(statusint==4){
+            // printf("Status %d\n",statusint);
+            if(statusint==4){ // Si el hijo acabo con un "shutdown", enviar la señal de salida al padre (init)                       
                 //xterm send alwais 0 unless error so im sending a signal to parent
                 // sleep(2);
                 kill(getppid(),SIGQUIT);
@@ -66,14 +66,14 @@ int main(){
                 // exit(1); didnt work 
 
                 }
-                // Si el hijo acabo con un "shutdown", enviar la señal de salida al padre (init)
+                
         }                             
     }
 }
 
 void sigquit() {
-    if(forking!=0){
-        kill(forking, SIGKILL);
+    if(forking!=0){   // Si un getty tenia un hijo sh activo, tiene que finalizarlo
+        kill(forking, SIGKILL); 
     }
     wait(NULL);
     exit(4);

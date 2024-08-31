@@ -23,9 +23,8 @@ int main(){
         for (int i = 0; i < 6; i++) // Constantemente, revisar todos los hijos
         {
             
-            if(ended == procesos[i]){ // Si un hijo finalizo... (se cerro la ventana)
-                                      // Verificar si se cerro por un shutdown, en caso de que si, cerrar todos los procesos
-                
+            if(ended == procesos[i]){ // Si un hijo finalizo...                             
+                // Verificar si se cerro por un shutdown, en caso de que si, cerrar todos los procesos
                 if(WEXITSTATUS(status)==3){
                     for (int i = 0; i < 6; i++)
                     {
@@ -35,7 +34,7 @@ int main(){
                     }
                     while(wait(NULL)>0);
                     return(0);
-                }else{
+                }else{ // O se cerro la ventana
                     procesos[i]=fork(); // Crear uno nuevo y guardar su pid
                 if(procesos[i]==0){
                     //execlp("sh","sh","xterm -e ./getty",NULL);
