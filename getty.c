@@ -22,11 +22,11 @@ int prompt_login() {
     strcat(con,dots);
     strcat(con,password); // Construir el login
     strcat(con,"\n");
-    printf("%s\n",con);
+    //printf("%s\n",con);
     while (fgets(lines,sizeof(lines),file)!=NULL) // Mientras aun haya lineas en el archivo
     {
-        printf("%s\n",lines);
-        printf("%d\n",strcmp(lines,con));
+        //printf("%s\n",lines);
+        //printf("%d\n",strcmp(lines,con));
         if(strcmp(lines,con)==0){ // Si un login coincide con el archivo, devuelve true
             printf("Success\n");
             //sleep(1);
